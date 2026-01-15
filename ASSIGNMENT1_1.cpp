@@ -1,12 +1,44 @@
 #include<bits/stdc++.h>
 using namespace std;
-
 struct p{
     string s;
     vector<string> path;
     int cost;
     unordered_set<string> visited;
 };
+void exploration_path_cost(string src,string dest,unordered_map<string,vector<pair<string,int>>> g){
+    unordered_map<string,bool> visited;
+    queue<string> q;
+    visited[src] = true;
+    q.push(src);
+    int cost = 0;
+    bool found = false;
+    while(!q.empty()){
+        int levelsize = q.size();
+        while(levelsize--){
+            string s = q.front();
+            q.pop();
+            
+            for(auto it : g[s]){
+                string s1 = it.first;
+                int c = it.second;
+                if(s1 == dest) found = true;
+                if(!visited[s1]){
+                    q.push(s1);
+                    visited[s1] = true;
+                    cost += c;
+                    if(found){
+                        cout << cost;
+                        return;
+                    }
+                }
+            }
+        }
+        
+    }
+}
+
+
 void bfs(string src,string dest,unordered_map<string,vector<pair<string,int>>>&g){
     queue<p> q;
     q.push({src,{src},0,{src}});
@@ -50,6 +82,7 @@ void dfs(string curr,string dest,unordered_map<string,vector<pair<string,int>>> 
     for (auto &nbr : g[curr]) {
         string next = nbr.first;
         int c = nbr.second;
+
         if (!visited1.count(next)) {
             visited1.insert(next);
             pathdfs.push_back(next);
@@ -79,6 +112,9 @@ int main(){
     g["Syracuse"] = {{"Buffalo",150},{"Philadelphia",253},{"New york",254},{"Boston",312}};
 
     string src = "Syracuse",dest = "Chicago";
+    cout << "----------------------------exploration path cost--------------------------" << "\n";
+    exploration_path_cost(src,dest,g);
+    cout << "\n";
     cout << "---------BFS TO FIND ALL POSSIBLE STEP COST BETWEEN SYRACUSE TO CHICAGO--------" << "\n";
     bfs(src,dest,g);
     cout << "\n";
